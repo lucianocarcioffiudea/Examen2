@@ -1,24 +1,34 @@
 package modelos;
 
-public class Envio {
+public abstract class Envio {
+
     private String cliente;
-    private TipoDeEnvio tipo;
     private String codigo;
     private double peso;
     private double distancia;
-    private double costo;
-    public Envio(String cliente, String codigo){
+
+    public Envio(String cliente, String codigo, double peso, double distancia) {
         this.cliente = cliente;
         this.codigo = codigo;
-        this.costo = 0;
+        this.peso = peso;
+        this.distancia = distancia;
     }
+
+    public String[] getDatos() {
+        return new String[] {
+                this.getClass().getSimpleName(),
+                this.getTitular(),
+                this.getCodigo(),
+                String.valueOf(this.getPeso()),
+                String.valueOf(this.getDistancia()),
+                String.valueOf(this.calcularTarifa())
+        };
+    }
+
     public String getTitular() {
         return cliente;
     }
 
-    public TipoDeEnvio getTipo() {
-        return tipo;
-    }
     public String getCodigo() {
         return codigo;
     }
@@ -30,10 +40,6 @@ public class Envio {
     public double getDistancia() {
         return distancia;
     }
-    public double getCosto() {
-        return costo;
-    }
-    protected void setCosto(double costo) {
-        this.costo = costo;
-    }
+
+    public abstract double calcularTarifa();
 }

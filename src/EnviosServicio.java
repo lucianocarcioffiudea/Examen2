@@ -10,8 +10,8 @@ public class EnviosServicio {
 
     private static List<Envio> envios = new ArrayList<>();
 
-    public static String[] encabezados = new String[] { "Tipo", "Codigo", "Titular", "Peso", "Distancia", "Costo" };
-    
+    public static String[] encabezados = new String[] { "Tipo", "Codigo", "Cliente", "Peso", "Distancia", "Costo" };
+
     public static Envio getEnvios(int posicion) {
         if (posicion >= 0 && posicion < envios.size()) {
             return envios.get(posicion);
@@ -24,20 +24,26 @@ public class EnviosServicio {
 
         int fila = 0;
         for (Envio envio : envios) {
+            int columna = 0;
 
-        datos[fila][0] = envio.getTipo().toString();
-        datos[fila][1] = envio.getCodigo();
-        datos[fila][2] = envio.getTitular();
-        datos[fila][3] = String.valueOf(envio.getPeso());
-        datos[fila][4] = String.valueOf(envio.getDistancia());
-        datos[fila][5] = String.valueOf(envio.getCosto());
+            for (String dato : envio.getDatos()) {
+                datos[fila][columna] = dato;
+                columna++;
+            }
 
-        fila++;
-    }
+            fila++;
+        }
 
-        DefaultTableModel dtm = new DefaultTableModel(datos, encabezados);
+        DefaultTableModel dtm = new DefaultTableModel(datos, encabezados) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         tbl.setModel(dtm);
     }
+
     public static boolean eliminar(int posicion) {
         if (posicion >= 0 && posicion < envios.size()) {
             envios.remove(posicion);
@@ -45,4 +51,17 @@ public class EnviosServicio {
         }
         return false;
     }
+
+    public static void agregar(Envio envio) {
+        envios.add(envio);
+    }
+    
+    public static boolean existeCodigo(String codigo) {
+    for (Envio envio : envios) {
+        if (envio.getCodigo().equalsIgnoreCase(codigo)) {
+            return true;
+        }
+    }
+    return false;
+}
 }

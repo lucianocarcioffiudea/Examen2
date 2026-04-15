@@ -1,10 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.BoxLayout;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,22 +15,21 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
-
-import modelos.TipoDeEnvio;
+import modelos.Aereo;
+import modelos.Envio;
+import modelos.Maritimo;
+import modelos.Terrestre;
 
 public class FrmEmpresaTransporte extends JFrame {
-    public String[] encabezadosCuentas = new String[] { "Tipo", "Codigo", "Titular", "Peso",
-            "Distancia", "Costo" };
     private JLabel lblDistancia, lblPeso, lblTipo;
     private JTabbedPane tp;
     private JTable tblEnvios;
     private JPanel pnlEditarEnvio;
-    private JTextField txtCodigo, txtCliente, txtDistancia,txtPeso;
+    private JTextField txtCodigo, txtCliente, txtDistancia, txtPeso;
     private JComboBox<TipoDeEnvio> cmbTipoDeEnvio;
 
-    public FrmEmpresaTransporte(){
-        setSize(600,400);
+    public FrmEmpresaTransporte() {
+        setSize(600, 400);
         setTitle("Empresa de transporte");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -43,16 +38,16 @@ public class FrmEmpresaTransporte extends JFrame {
         btnAgregarPedido.setIcon(new ImageIcon(getClass().getResource("/iconos/btnAgregarCliente.png")));
         btnAgregarPedido.setToolTipText("Agregar Pedido");
         btnAgregarPedido.addActionListener(evt -> {
-             btnAgregarEnvioClick();
-        }); 
+            btnAgregarEnvioClick();
+        });
         tbEmpresaTransporte.add(btnAgregarPedido);
 
         JButton btnQuitarPedido = new JButton();
         btnQuitarPedido.setIcon(new ImageIcon(getClass().getResource("/iconos/btnQuitarCliente.png")));
         btnQuitarPedido.setToolTipText("Quitar Pedido");
-          btnQuitarPedido.addActionListener(evt -> {
+        btnQuitarPedido.addActionListener(evt -> {
             btnQuitarPedidoClick();
-        }); 
+        });
         tbEmpresaTransporte.add(btnQuitarPedido);
 
         JPanel pnlEnvio = new JPanel();
@@ -61,7 +56,7 @@ public class FrmEmpresaTransporte extends JFrame {
         pnlEditarEnvio.setPreferredSize(new Dimension(pnlEditarEnvio.getWidth(), 100));
         pnlEditarEnvio.setLayout(null);
 
-        JLabel lblCodigo = new JLabel("Codigo");
+        JLabel lblCodigo = new JLabel("Numero");
         lblCodigo.setBounds(10, 10, 100, 25);
         pnlEditarEnvio.add(lblCodigo);
 
@@ -91,15 +86,15 @@ public class FrmEmpresaTransporte extends JFrame {
         pnlEditarEnvio.add(lblTipo);
 
         cmbTipoDeEnvio = new JComboBox<>();
-        cmbTipoDeEnvio .setBounds(320, 10, 100, 25);
+        cmbTipoDeEnvio.setBounds(320, 10, 100, 25);
 
-        DefaultComboBoxModel mdlTipoDeEnvio = new DefaultComboBoxModel<>(TipoDeEnvio.values());
+        DefaultComboBoxModel<TipoDeEnvio> mdlTipoDeEnvio = new DefaultComboBoxModel<>(TipoDeEnvio.values());
         cmbTipoDeEnvio.setModel(mdlTipoDeEnvio);
         pnlEditarEnvio.add(cmbTipoDeEnvio);
 
         cmbTipoDeEnvio.addActionListener(e -> {
-                txtDistancia.setVisible(true);
-            });
+            txtDistancia.setVisible(true);
+        });
         lblPeso = new JLabel("Peso");
         lblPeso.setBounds(10, 70, 100, 25);
         lblPeso.setVisible(true);
@@ -114,14 +109,14 @@ public class FrmEmpresaTransporte extends JFrame {
         btnGuardarEnvio.setBounds(220, 70, 100, 25);
         btnGuardarEnvio.addActionListener(evt -> {
             btnGuardarEnvioClick();
-        }); 
+        });
         pnlEditarEnvio.add(btnGuardarEnvio);
 
         JButton btnCancelarEnvio = new JButton("Cancelar");
         btnCancelarEnvio.setBounds(320, 70, 100, 25);
         btnCancelarEnvio.addActionListener(evt -> {
             btnCancelarEnvioClick();
-        }); 
+        });
         pnlEditarEnvio.add(btnCancelarEnvio);
         pnlEditarEnvio.setVisible(false);
 
@@ -142,7 +137,6 @@ public class FrmEmpresaTransporte extends JFrame {
         add(tbEmpresaTransporte, BorderLayout.NORTH);
         add(tp, BorderLayout.CENTER);
     }
-    
 
     private void btnAgregarEnvioClick() {
         pnlEditarEnvio.setVisible(true);
@@ -162,9 +156,52 @@ public class FrmEmpresaTransporte extends JFrame {
         }
 
     }
-    private void btnGuardarEnvioClick() {
-        pnlEditarEnvio.setVisible(true);
 
+    private void btnGuardarEnvioClick() {
+        try {
+
+            String codigo = txtCodigo.getText();
+            String cliente = txtCliente.getText();
+            double peso = Double.parseDouble(txtPeso.getText());
+            double distancia = Double.parseDouble(txtDistancia.getText());
+
+            if (EnviosServicio.existeCodigo(codigo)) {
+                JOptionPane.showMessageDialog(null, "El código ya existe");
+                return;
+            }
+
+            TipoDeEnvio tipo = (TipoDeEnvio) cmbTipoDeEnvio.getSelectedItem();
+
+            Envio envio = null;
+
+            switch (tipo) {
+                case Terrestre:
+                    envio = new Terrestre(codigo, cliente, peso, distancia);
+                    break;
+                case Aereo:
+                    envio = new Aereo(codigo, cliente, peso, distancia);
+                    break;
+                case Maritimo:
+                    envio = new Maritimo(codigo, cliente, peso, distancia);
+                    break;
+            }
+
+            EnviosServicio.agregar(envio);
+
+            EnviosServicio.mostrar(tblEnvios);
+
+            txtCodigo.setText("");
+            txtCliente.setText("");
+            txtPeso.setText("");
+            txtDistancia.setText("");
+
+            pnlEditarEnvio.setVisible(false);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Peso y distancia deben ser números");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al guardar el envío");
+        }
     }
 
     private void btnCancelarEnvioClick() {
