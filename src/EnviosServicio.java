@@ -10,7 +10,7 @@ public class EnviosServicio {
 
     private static List<Envio> envios = new ArrayList<>();
 
-    public static String[] encabezados = new String[] { "Tipo", "Número", "Titular", "Peso", "Distancia", "Costo" };
+    public static String[] encabezados = new String[] { "Tipo", "Codigo", "Titular", "Peso", "Distancia", "Costo" };
     
     public static Envio getEnvios(int posicion) {
         if (posicion >= 0 && posicion < envios.size()) {
@@ -26,7 +26,7 @@ public class EnviosServicio {
         for (Envio envio : envios) {
 
         datos[fila][0] = envio.getTipo().toString();
-        datos[fila][1] = envio.getNumero();
+        datos[fila][1] = envio.getCodigo();
         datos[fila][2] = envio.getTitular();
         datos[fila][3] = String.valueOf(envio.getPeso());
         datos[fila][4] = String.valueOf(envio.getDistancia());

@@ -3,13 +3,13 @@ package modelos;
 public class Envio {
     private String cliente;
     private TipoDeEnvio tipo;
-    private String numero;
+    private String codigo;
     private double peso;
     private double distancia;
     private double costo;
-    public Envio(String cliente, String numero){
+    public Envio(String cliente, String codigo){
         this.cliente = cliente;
-        this.numero = numero;
+        this.codigo = codigo;
         this.costo = 0;
     }
     public String getTitular() {
@@ -19,8 +19,8 @@ public class Envio {
     public TipoDeEnvio getTipo() {
         return tipo;
     }
-    public String getNumero() {
-        return numero;
+    public String getCodigo() {
+        return codigo;
     }
 
     public double getPeso() {
